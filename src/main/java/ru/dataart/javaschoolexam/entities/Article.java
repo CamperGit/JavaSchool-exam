@@ -1,5 +1,8 @@
 package ru.dataart.javaschoolexam.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -18,6 +21,7 @@ public class Article {
     private String title;
     private String text;
     private Timestamp dateOfCreation;
+    @JsonIgnoreProperties("articles")
     private Section section;
 
     @Id

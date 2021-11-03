@@ -1,5 +1,8 @@
 package ru.dataart.javaschoolexam.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +18,7 @@ import java.util.List;
 public class Section {
     private Integer sectionId;
     private String name;
+    @JsonIgnoreProperties("section")
     private List<Article> articles;
 
     @Id
