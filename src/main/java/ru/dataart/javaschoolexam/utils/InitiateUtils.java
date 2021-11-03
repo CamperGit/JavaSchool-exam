@@ -54,12 +54,5 @@ public class InitiateUtils implements CommandLineRunner {
 
             articlesService.saveArticles(List.of(sportArticle1, sportArticle2));
         }
-
-        List<Article> articles = articlesService.getAllArticles();
-        List<Section> sections = sectionsService.getAllSections();
-        for (Article article : articles) {
-            System.out.println(article.getText());
-            System.out.println(article.getSection().getName());
-        }
     }
 }

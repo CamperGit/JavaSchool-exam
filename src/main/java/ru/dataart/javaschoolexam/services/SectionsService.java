@@ -9,6 +9,7 @@ import ru.dataart.javaschoolexam.entities.Section;
 import ru.dataart.javaschoolexam.repos.SectionsRepo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,6 +23,10 @@ public class SectionsService {
 
     public List<Section> saveSections(List<Section> sections) {
         return sectionsRepo.saveAll(sections);
+    }
+
+    public Optional<Section> findSectionById(Integer id) {
+        return sectionsRepo.findById(id);
     }
 
     @Transactional(readOnly = true)
