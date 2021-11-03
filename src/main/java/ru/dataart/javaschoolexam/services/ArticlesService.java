@@ -1,5 +1,6 @@
 package ru.dataart.javaschoolexam.services;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,8 +12,9 @@ import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ArticlesService {
-    private ArticlesRepo articlesRepo;
+    private final ArticlesRepo articlesRepo;
 
     public Article saveArticle(Article article) {
         return articlesRepo.save(article);
@@ -33,10 +35,5 @@ public class ArticlesService {
 
     public long getCountOfRows() {
         return articlesRepo.count();
-    }
-
-    @Autowired
-    public void setArticlesRepo(ArticlesRepo articlesRepo) {
-        this.articlesRepo = articlesRepo;
     }
 }

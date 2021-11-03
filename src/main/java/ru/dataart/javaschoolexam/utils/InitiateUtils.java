@@ -1,5 +1,6 @@
 package ru.dataart.javaschoolexam.utils;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -15,9 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class InitiateUtils implements CommandLineRunner {
-    private SectionsService sectionsService;
-    private ArticlesService articlesService;
+    private final SectionsService sectionsService;
+    private final ArticlesService articlesService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -59,15 +61,5 @@ public class InitiateUtils implements CommandLineRunner {
             System.out.println(article.getText());
             System.out.println(article.getSection().getName());
         }
-    }
-
-    @Autowired
-    public void setSectionsService(SectionsService sectionsService) {
-        this.sectionsService = sectionsService;
-    }
-
-    @Autowired
-    public void setArticlesService(ArticlesService articlesService) {
-        this.articlesService = articlesService;
     }
 }

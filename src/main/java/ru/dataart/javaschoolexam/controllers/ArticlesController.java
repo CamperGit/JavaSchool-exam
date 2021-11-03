@@ -1,5 +1,6 @@
 package ru.dataart.javaschoolexam.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +14,12 @@ import java.util.List;
 @CrossOrigin(origins = "${crossOrigin.url}", maxAge = 3600)
 @RestController
 @RequestMapping("/articles")
+@RequiredArgsConstructor
 public class ArticlesController {
-    private ArticlesService articlesService;
+    private final ArticlesService articlesService;
 
     @GetMapping
     public List<Article> getAllArticles() {
         return articlesService.getAllArticles();
-    }
-
-    @Autowired
-    public void setArticlesService(ArticlesService articlesService) {
-        this.articlesService = articlesService;
     }
 }
