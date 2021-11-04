@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dataart.javaschoolexam.entities.Article;
 import ru.dataart.javaschoolexam.entities.Section;
+import ru.dataart.javaschoolexam.exceptions.WrongArticleFormatException;
 import ru.dataart.javaschoolexam.repos.ArticlesRepo;
 import ru.dataart.javaschoolexam.utils.FileUtils;
 
@@ -19,6 +20,7 @@ import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -35,14 +37,19 @@ public class ArticlesService {
     private static final Integer ITEMS_PER_PAGE = 5;
 
     public Article createArticleByZip(MultipartFile file, Integer sectionId) {
-        Optional<Section> section = sectionsService.findSectionById(sectionId);
+        Optional<Section> section = Optional.empty();
+        if (sectionId != null) {
+         section = sectionsService.findSectionById(sectionId);
+        }
+        File zipFile = null;
         try {
-            File zipFile = fileUtils.convertMultipartFileToFile(file);
+            zipFile = fileUtils.convertMultipartFileToFile(file);
             List<File> unpackedFiles = fileUtils.unpackZipFileToDirectory(zipFile, ARTICLES_PATH);
             if (unpackedFiles.size() != 1) {
-                throw new IllegalStateException();
+                throw new WrongArticleFormatException("Архив должен содержать только один файл");
             }
             File fileFromZip = unpackedFiles.get(0);
+
             if (fileFromZip.getName().equals("article.txt")) {
                 List<String> strings = Files.readAllLines(fileFromZip.toPath());
                 if (strings.size() > 2) {
@@ -52,16 +59,27 @@ public class ArticlesService {
                         articleBodyBuilder.append(strings.get(i));
                     }
                     String articleBody = articleBodyBuilder.toString();
+                    if (articleBody.isEmpty() || title.isEmpty()) {
+                        throw new WrongArticleFormatException("Файл должен содержать заголовок и тело статьи");
+                    }
                     Article article = new Article();
                     article.setTitle(title);
                     article.setText(articleBody);
                     article.setDateOfCreation(Timestamp.from(Instant.now()));
                     section.ifPresent(article::setSection);
+                    unpackedFiles.forEach(fileUtils::deleteFile);
                     return articlesRepo.save(article);
+                } else {
+                    throw new WrongArticleFormatException("Файл не содержит тела статьи");
                 }
+            } else {
+                throw new WrongArticleFormatException("Файл статьи должен называться article.txt");
             }
+
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            fileUtils.deleteFile(zipFile);
         }
         return null;
     }
