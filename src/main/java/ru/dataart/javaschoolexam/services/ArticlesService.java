@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,19 +81,23 @@ public class ArticlesService {
 
     @Transactional(readOnly = true)
     public Page<Article> getArticlesPage(Integer pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE);
+        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE, Sort.by("dateOfCreation").descending());
         return articlesRepo.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<Article> getArticlesPageBySection(Integer pageNumber, Integer sectionId) {
-        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE);
+        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE, Sort.by("dateOfCreation").descending());
         Section section = sectionsService.findSectionById(sectionId).orElseThrow(EntityNotFoundException::new);
         return articlesRepo.getArticlesBySection(pageable, section);
     }
 
     public void deleteArticle(Article article) {
         articlesRepo.delete(article);
+    }
+
+    public void deleteAllArticles() {
+        articlesRepo.deleteAll();
     }
 
     public long getCountOfRows() {

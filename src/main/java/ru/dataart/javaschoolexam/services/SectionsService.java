@@ -8,6 +8,7 @@ import ru.dataart.javaschoolexam.entities.Article;
 import ru.dataart.javaschoolexam.entities.Section;
 import ru.dataart.javaschoolexam.repos.SectionsRepo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SectionsService {
     private final SectionsRepo sectionsRepo;
+
+    public Section createNewSectionByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            Section section = new Section(name, new ArrayList<>());
+            return sectionsRepo.save(section);
+        }
+        return null;
+    }
 
     public Section saveSection(Section section) {
         return sectionsRepo.save(section);
@@ -36,6 +45,10 @@ public class SectionsService {
 
     public void deleteSection(Section section) {
         sectionsRepo.delete(section);
+    }
+
+    public void deleteAllSection() {
+        sectionsRepo.deleteAll();
     }
 
     public long getCountOfRows() {

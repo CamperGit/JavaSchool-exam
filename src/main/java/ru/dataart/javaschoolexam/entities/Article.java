@@ -38,7 +38,8 @@ public class Article {
     }
 
     @Basic
-    @Column(name = "text", nullable = false, length = 1000)
+    @Lob
+    @Column(name = "text", columnDefinition = "CLOB NOT NULL")
     public String getText() {
         return text;
     }
