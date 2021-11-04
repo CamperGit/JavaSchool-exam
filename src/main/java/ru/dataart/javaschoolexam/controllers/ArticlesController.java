@@ -1,6 +1,7 @@
 package ru.dataart.javaschoolexam.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,10 @@ public class ArticlesController {
     @GetMapping("/filterBySection")
     public ResponseEntity<?> getArticlesPageBySection(@RequestParam("pageNumber") Integer pageNumber, @RequestParam("sectionId") Integer sectionId) {
         return ResponseEntity.ok(articlesService.getArticlesPageBySection(pageNumber, sectionId));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteArticleById(@PathVariable("id") Article article) {
+        articlesService.deleteArticle(article);
     }
 }
