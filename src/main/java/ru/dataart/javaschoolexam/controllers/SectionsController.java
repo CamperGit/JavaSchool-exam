@@ -2,6 +2,7 @@ package ru.dataart.javaschoolexam.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.dataart.javaschoolexam.entities.Section;
 import ru.dataart.javaschoolexam.services.SectionsService;
@@ -10,18 +11,18 @@ import java.util.List;
 
 @CrossOrigin(origins = "${crossOrigin.url}", maxAge = 3600)
 @RestController
-@RequestMapping("/sections")
+@RequestMapping("/api/sections")
 @RequiredArgsConstructor
 public class SectionsController {
     private final SectionsService sectionsService;
 
     @GetMapping
-    public List<Section> getAllSections() {
-        return sectionsService.getAllSections();
+    public ResponseEntity<?> getAllSections() {
+        return ResponseEntity.ok(sectionsService.getAllSections());
     }
 
     @PostMapping
-    public Section createNewSectionByName(@RequestParam String name) {
-        return sectionsService.createNewSectionByName(name);
+    public ResponseEntity<?> createNewSectionByName(@RequestParam String name) {
+        return ResponseEntity.ok(sectionsService.createNewSectionByName(name));
     }
 }
