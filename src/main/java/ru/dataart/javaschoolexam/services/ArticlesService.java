@@ -3,6 +3,9 @@ package ru.dataart.javaschoolexam.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +14,7 @@ import ru.dataart.javaschoolexam.entities.Section;
 import ru.dataart.javaschoolexam.repos.ArticlesRepo;
 import ru.dataart.javaschoolexam.utils.FileUtils;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,6 +31,7 @@ public class ArticlesService {
     private final SectionsService sectionsService;
     private final FileUtils fileUtils;
     private static final String ARTICLES_PATH = File.separator + "articles";
+    private static final Integer ITEMS_PER_PAGE = 5;
 
     public Article createArticleByZip(MultipartFile file, Integer sectionId) {
         Optional<Section> section = sectionsService.findSectionById(sectionId);
@@ -71,6 +76,19 @@ public class ArticlesService {
     @Transactional(readOnly = true)
     public List<Article> getAllArticles() {
         return articlesRepo.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Article> getArticlesPage(Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE);
+        return articlesRepo.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Article> getArticlesPageBySection(Integer pageNumber, Integer sectionId) {
+        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE);
+        Section section = sectionsService.findSectionById(sectionId).orElseThrow(EntityNotFoundException::new);
+        return articlesRepo.getArticlesBySection(pageable, section);
     }
 
     public void deleteArticle(Article article) {

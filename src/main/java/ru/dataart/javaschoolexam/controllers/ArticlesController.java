@@ -1,6 +1,7 @@
 package ru.dataart.javaschoolexam.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.dataart.javaschoolexam.entities.Article;
@@ -21,7 +22,19 @@ public class ArticlesController {
     }
 
     @GetMapping
+    public Page<Article> getArticlesPage(@RequestParam("pageNumber") Integer pageNumber) {
+        return articlesService.getArticlesPage(pageNumber);
+    }
+
+    @GetMapping("/filterBySection")
+    public Page<Article> getArticlesPageBySection(@RequestParam("pageNumber") Integer pageNumber, @RequestParam("sectionId") Integer sectionId) {
+        return articlesService.getArticlesPageBySection(pageNumber, sectionId);
+    }
+
+
+
+   /* @GetMapping
     public List<Article> getAllArticles() {
         return articlesService.getAllArticles();
-    }
+    }*/
 }
