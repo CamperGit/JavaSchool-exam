@@ -18,7 +18,7 @@ import java.util.List;
 public class Section {
     private Integer sectionId;
     private String name;
-    @JsonIgnoreProperties("section")
+    @JsonBackReference
     private List<Article> articles;
 
     @Id

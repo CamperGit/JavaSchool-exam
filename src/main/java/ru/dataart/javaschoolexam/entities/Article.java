@@ -21,7 +21,7 @@ public class Article {
     private String title;
     private String text;
     private Timestamp dateOfCreation;
-    @JsonIgnoreProperties("articles")
+    @JsonManagedReference
     private Section section;
 
     @Id
