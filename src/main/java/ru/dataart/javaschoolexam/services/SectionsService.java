@@ -19,11 +19,12 @@ public class SectionsService {
     private final SectionsRepo sectionsRepo;
 
     public Section createNewSectionByName(String name) {
-        if (name != null && !name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
+            throw new RuntimeException("Section name cannot be null or empty");
+        } else {
             Section section = new Section(name, new ArrayList<>());
             return sectionsRepo.save(section);
         }
-        return null;
     }
 
     public Section saveSection(Section section) {

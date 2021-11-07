@@ -99,14 +99,20 @@ public class ArticlesService {
 
     @Transactional(readOnly = true)
     public Page<Article> getArticlesPage(Integer pageNumber) {
+        if (pageNumber < 0) {
+            throw new RuntimeException("Page index must not be less than zero!");
+        }
         Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE, Sort.by("dateOfCreation").descending());
         return articlesRepo.findAll(pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<Article> getArticlesPageBySection(Integer pageNumber, Integer sectionId) {
+        if (pageNumber < 0) {
+            throw new RuntimeException("Page index must not be less than zero!");
+        }
+        Section section = sectionsService.findSectionById(sectionId).orElseThrow(()-> new RuntimeException("Not found section with selected id"));
         Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE, Sort.by("dateOfCreation").descending());
-        Section section = sectionsService.findSectionById(sectionId).orElseThrow(EntityNotFoundException::new);
         return articlesRepo.getArticlesBySection(pageable, section);
     }
 

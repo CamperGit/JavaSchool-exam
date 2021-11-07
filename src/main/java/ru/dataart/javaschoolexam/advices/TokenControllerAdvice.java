@@ -15,6 +15,13 @@ import java.util.zip.ZipException;
 @RestControllerAdvice
 public class TokenControllerAdvice {
 
+    @ExceptionHandler(value = RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorDto handleRuntimeException(RuntimeException ex) {
+        return new ErrorDto(ex.getMessage());
+    }
+
     @ExceptionHandler(value = WrongArticleFormatException.class)
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ResponseBody
