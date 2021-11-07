@@ -34,7 +34,7 @@ public class ArticlesService {
     private final SectionsService sectionsService;
     private final FileUtils fileUtils;
     private static final String ARTICLES_PATH = File.separator + "articles";
-    private static final Integer ITEMS_PER_PAGE = 5;
+    private static final Integer ARTICLES_PER_PAGE = 5;
 
     public Article createArticleByZip(MultipartFile file, Integer sectionId) {
         Optional<Section> section = Optional.empty();
@@ -53,12 +53,12 @@ public class ArticlesService {
             if (fileFromZip.getName().equals("article.txt")) {
                 List<String> strings = Files.readAllLines(fileFromZip.toPath());
                 if (strings.size() > 2) {
-                    String title = strings.get(0);
+                    String title = strings.get(0).trim();
                     StringBuilder articleBodyBuilder = new StringBuilder();
                     for (int i = 1; i < strings.size(); i++ ) {
                         articleBodyBuilder.append(strings.get(i));
                     }
-                    String articleBody = articleBodyBuilder.toString();
+                    String articleBody = articleBodyBuilder.toString().trim();
                     if (articleBody.isEmpty() || title.isEmpty()) {
                         throw new WrongArticleFormatException("Файл должен содержать заголовок и тело статьи");
                     }
@@ -102,7 +102,7 @@ public class ArticlesService {
         if (pageNumber < 0) {
             throw new RuntimeException("Page index must not be less than zero!");
         }
-        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE, Sort.by("dateOfCreation").descending());
+        Pageable pageable = PageRequest.of(pageNumber, ARTICLES_PER_PAGE, Sort.by("dateOfCreation").descending());
         return articlesRepo.findAll(pageable);
     }
 
@@ -112,7 +112,7 @@ public class ArticlesService {
             throw new RuntimeException("Page index must not be less than zero!");
         }
         Section section = sectionsService.findSectionById(sectionId).orElseThrow(()-> new RuntimeException("Not found section with selected id"));
-        Pageable pageable = PageRequest.of(pageNumber, ITEMS_PER_PAGE, Sort.by("dateOfCreation").descending());
+        Pageable pageable = PageRequest.of(pageNumber, ARTICLES_PER_PAGE, Sort.by("dateOfCreation").descending());
         return articlesRepo.getArticlesBySection(pageable, section);
     }
 
